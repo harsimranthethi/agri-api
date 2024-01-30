@@ -27,6 +27,16 @@ router.post("/ingest", async function(req,res,next){
     res.send({status: mobj})
 })
 
+//sf/ingest
+router.post("/ingestcsv", express.raw({ type: '*/*' }), async function(req,res,next){
+    var csv = require("csvtojson")
+    console.log(req.body.toString())
+    csv().fromString(req.body.toString()).then(async j=>{
+        console.log(j)
+        var mobj = await mdb.ingestFeed(j)
+        res.send({status: mobj})
+    })
+})
 
 module.exports = router
 

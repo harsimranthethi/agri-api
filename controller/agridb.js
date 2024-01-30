@@ -7,9 +7,6 @@ const client = new MongoClient(uri);
 client.connect(); //used to establish a connection to the MongoDB database.
 
 
-//returns the list of movies (20 per page) depending on sort order. if sort order is undefined then alphabetically
-//by year, alpha, duration, rating, genre
-
 
 //The function returns the array of Feed retrieved from the database.
 async function listFeed(pageNumber, sortOrder, sortDirection, searchStr) {
@@ -52,6 +49,17 @@ async function listFeed(pageNumber, sortOrder, sortDirection, searchStr) {
     return outFeed
 }
 
+async function findMaxHumidityForEachSensor() {
+
+    const database = client.db('weather');
+    const sf = database.collection('sensorfeed');
+    const result = await sf.aggregate([
+    { $group: { _id: "$Sensor_Id", maxHumidity: { $max: "$Humidity" } } }
+    ]).toArray();
+    console.log(result);
+    return result
+}
+
 async function ingestFeed(arFeed){
     const database = client.db('weather');
     const sf = database.collection('sensorfeed');
@@ -60,6 +68,7 @@ async function ingestFeed(arFeed){
     return true
 
 }
+
 
 async function clearCollection() {
     const database = client.db('weather');
@@ -70,9 +79,7 @@ async function clearCollection() {
 
 }
 
-async function aggregateByTime(start,end) {
 
-}
 
 
 
@@ -139,6 +146,7 @@ async function deleteMovie(id) {
 
 exports.listFeed = listFeed
 exports.ingestFeed = ingestFeed
+exports.findMaxHumidityForEachSensor = findMaxHumidityForEachSensor
 exports.clearCollection = clearCollection
 exports.movieByID = movieByID
 exports.createMovie = createMovie
