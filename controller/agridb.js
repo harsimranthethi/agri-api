@@ -60,6 +60,42 @@ async function findMaxHumidityForEachSensor() {
     return result
 }
 
+async function findMaxTemperatureForEachSensor() {
+
+    const database = client.db('weather');
+    const sf = database.collection('sensorfeed');
+    const result = await sf.aggregate([
+    { $group: { _id: "$Sensor_Id", maxTemperature: { $max: "$Temperature" } } }
+    ]).toArray();
+    console.log(result);
+    return result
+}
+
+async function findAverageTemperatureBySensor() {
+
+    const database = client.db('weather');
+    const sf = database.collection('sensorfeed');
+    const result = await sf.aggregate([
+        { $group: { _id: '$Sensor_Id', avgTemperature: { $avg: '$Temperature' } } }
+      ]).toArray();
+      console.log(result);
+      return result;
+    
+}
+
+async function findAverageHumidityBySensor() {
+
+    const database = client.db('weather');
+    const sf = database.collection('sensorfeed');
+    const result = await sf.aggregate([
+        { $group: { _id: '$Sensor_Id', avgHumidity: { $avg: '$Humidity' } } }
+      ]).toArray();
+      console.log(result);
+      return result;
+    
+}
+
+
 async function ingestFeed(arFeed){
     const database = client.db('weather');
     const sf = database.collection('sensorfeed');
@@ -83,72 +119,61 @@ async function clearCollection() {
 
 
 
-//return the movie by ID
-async function movieByID(id) {
+//return the reading by ID
+async function readingByID(id) {
 
     await client.connect();
-    const database = client.db('sample_mflix');
-    const movies = database.collection('movies');
+    const database = client.db('weather');
+    const movies = database.collection('sensorfeed');
     try {
         const query = { _id: new ObjectId(id) };
-        const movie = await movies.findOne(query);
+        const movie = await sf.findOne(query); //double check 
         //await client.close();
-        return movie
+        return result
     }
     catch(e){
         return {error:"Incorrect ID"}
     }
 }
 
-//new movie 
-async function createMovie(newmovie) {
-
-    await client.connect();
-    const database = client.db('sample_mflix');
-    const movies = database.collection('movies');
-    
-    // Insert the new movie into the 'movies' collection
-    const result = await movies.insertOne(newmovie);
-    console.log(result)
-    //await client.close();
-    return result;
-
-}
 
 //update movie 
 
-async function updateMovie(id, movie) {
+//async function updateMovie(id, movie) {
 
-    await client.connect();
-    const database = client.db('sample_mflix');
-    const movies = database.collection('movies');
-    var result = await movies.updateOne({ _id: new ObjectId(id) }, {"$set": movie})
+//    await client.connect();
+//    const database = client.db('sample_mflix');
+//    const movies = database.collection('movies');
+//    var result = await movies.updateOne({ _id: new ObjectId(id) }, {"$set": movie})
     //await client.close();
-    return result
+//    return result
 
-}
+//}
 
 //delete movie 
-async function deleteMovie(id) {
+//async function deleteMovie(id) {
 
-    await client.connect();
-    const database = client.db('sample_mflix');
-    const movies = database.collection('movies');
+//    await client.connect();
+//    const database = client.db('sample_mflix');
+//    const movies = database.collection('movies');
     
-    const query = { _id: new ObjectId(id) };  //find movie based on id
-    const result = await movies.deleteOne(query);
+//    const query = { _id: new ObjectId(id) };  //find movie based on id
+//    const result = await movies.deleteOne(query);
     
     //await client.close();
-    return result
+//    return result
 
 
-}
+//}
 
 exports.listFeed = listFeed
 exports.ingestFeed = ingestFeed
 exports.findMaxHumidityForEachSensor = findMaxHumidityForEachSensor
+exports.findAverageTemperatureBySensor = findAverageTemperatureBySensor
+exports.findMaxTemperatureForEachSensor = findMaxTemperatureForEachSensor
+exports.findAverageHumidityBySensor = findAverageHumidityBySensor
 exports.clearCollection = clearCollection
-exports.movieByID = movieByID
-exports.createMovie = createMovie
-exports.deleteMovie = deleteMovie
-exports.updateMovie = updateMovie
+exports.readingByID = readingByID
+//exports.createMovie = createMovie
+//exports.deleteMovie = deleteMovie
+//exports.updateMovie = updateMovie
