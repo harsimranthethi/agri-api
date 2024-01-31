@@ -21,7 +21,7 @@ async function listFeed(pageNumber, sortOrder, sortDirection, searchStr) {
     var direction = -1 
     if( sortDirection == "A") direction = 1; 
 
-    switch(sortOrder){
+    /*switch(sortOrder){
         case "title":
             sortQuery = { title: direction };
             break;
@@ -32,9 +32,9 @@ async function listFeed(pageNumber, sortOrder, sortDirection, searchStr) {
             sortQuery = { runtime: direction };        
             break;
         case "rating":
-            sortQuery = { "imdb.rating": direction };        
+           sortQuery = { "imdb.rating": direction };        
             break;
-    }
+    }*/
 
     var options = {sort: sortQuery} 
     var rx = new RegExp(searchStr,"i") 
@@ -139,16 +139,17 @@ async function readingByID(id) {
 
 //update movie 
 
-//async function updateMovie(id, movie) {
+/*async function updateMovie(id, movie) {
 
-//    await client.connect();
-//    const database = client.db('sample_mflix');
-//    const movies = database.collection('movies');
-//    var result = await movies.updateOne({ _id: new ObjectId(id) }, {"$set": movie})
-    //await client.close();
-//    return result
+    await client.connect();
+    const database = client.db('sample_mflix');
+    const movies = database.collection('movies');
+    var result = await movies.updateOne({ _id: new ObjectId(id) }, {"$set": movie})
+    await client.close();
+    return result
 
-//}
+}
+
 
 //delete movie 
 //async function deleteMovie(id) {
@@ -164,7 +165,7 @@ async function readingByID(id) {
 //    return result
 
 
-//}
+}*/
 
 exports.listFeed = listFeed
 exports.ingestFeed = ingestFeed
